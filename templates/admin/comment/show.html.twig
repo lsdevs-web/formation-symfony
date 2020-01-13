@@ -1,0 +1,74 @@
+{% extends '/admin/base.html.twig' %}
+
+{% block title %}Administration des commentaires{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="my-5">Gestion des annonces</h1>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Auteur</th>
+                <th>Commentaire</th>
+                <th class="text-center">Note</th>
+                <th>Annonce</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+                <tbody>
+                {% for comment in pagination.data %}
+
+                <tr>
+                    <td>{{ comment.id }}</td>
+                    <td>{{ comment.createdAt|date('d/m/Y') }}</td>
+
+                    <td class="text-center">
+                        <img src="{{ comment.author.avatar }}" alt="" class="avatar avatar-mini mr-2">
+                        {{ comment.author.firstName }}
+                    </td>
+
+                    <td>{{ comment.content }}</td>
+
+                    <td class="text-center">
+                        <span class="badge badge-primary rounded">{{ comment.rating }}</span>
+                    </td>
+
+                    <td>
+                        {{ comment.annonce }}
+                    </td>
+
+                    <td>
+                        <a href="{{ path('admin_comment_edit', {'id': comment.id}) }}" class="btn btn-primary"> <i class="fa fa-edit"></i> </a>
+                        <a href="{{ path('admin_comment_delete', {'id': comment.id}) }}" onclick="return confirm(`Voulez-vous vraiment supprimer ce commentaire ?`)" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+
+        </table>
+        <div class="d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item {% if pagination.currentPage == 1 %}disabled {% endif %}">
+                    <a class="page-link" href="{{ path('admin_comment_index', {'page': pagination.currentPage - 1 }) }}">&laquo;</a>
+                </li>
+
+                {% for i in 1..pagination.pages %}
+
+                    <li class="page-item {% if pagination.currentPage == i %} active {% endif %}">
+                        <a class="page-link" href="{{ path('admin_comment_index', {'page': i}) }}">{{ i }}</a>
+                    </li>
+
+                {% endfor %}
+
+                <li class="page-item {% if pagination.currentPage == pagination.pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ path('admin_comment_index', {'page': pagination.currentPage + 1}) }}">&raquo;</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

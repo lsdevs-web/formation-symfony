@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'un annonce{% endblock %}
+
+{% form_theme form 'partials/_collection.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Créer une nouvelle annonce</h1>
+
+        {# {{ form(form) }} #}
+
+        {{ form_start(form) }}
+
+        {{ form_widget(form) }}
+
+        <button type="submit" class="btn btn-primary">Créer la nouvelle annonce</button>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block _annonce_images_widget %}
+    <p>Ajoutez vos images !</p>
+
+    {{ form_widget(form) }}
+
+    <input type="hidden" id="widgets-counter" value="0"> {# Pour corriger le bug des doubles suppression#}
+
+    <div class="form-group">
+        <button type="button" id="add-image" class="btn btn-primary">Ajouter une image</button>
+    </div>
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+
+{{ encore_entry_script_tags('js/ad') }}
+
+{% endblock %}

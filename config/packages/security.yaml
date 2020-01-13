@@ -1,0 +1,77 @@
+security:
+    encoders:
+    # On passe notre Entity Usser au encoders pour définir son algorithm de cryptage
+        App\Entity\User:
+    # On utilise auto et pas bcrypt (deprecated)
+            algorithm: auto
+
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        in_memory: { memory: null }
+    # Ici on créé un nouveau provider pour que les utilisateurs puissent se connecter à la BDD
+    # Ici le provider vient d'une Entity qui a comme classe User (c'est nos utilisateurs)
+    # Il faut préciser en property quel type de données pour se connecter (email, pseudo etc)
+    # Ne pas oublier de mettre notre provider aussi dans le firewall
+        in_database:
+            entity:
+                class: App\Entity\User
+                property: email
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        # On créé un firewall pour les admins, on se place entre le dev et le main pour qu'il soit vu avant le main
+        admin:
+        #Tout ce qui commence par admin fait partie du firewall admin
+            pattern: ^/admin
+        #On peut y accéder de manière anonyme (pour la page de login admin)
+            anonymous: true
+
+        #Si j'ai des connexions qui est le provider ? (L'entité qui peut se connecter)
+            provider: in_database
+
+        #Le form_login est différents ici, on veut qu'il nous redirige sur le form_login de /admin/login
+            form_login:
+                #Le chemin du formulaire de connexion
+                login_path: admin_account_login
+                #La vérification pour voir si les infos sont bonnes
+                check_path: admin_account_login
+                default_target_path: admin_dashboard
+
+            logout:
+                path: admin_account_logout
+                target: admin_account_login
+
+        main:
+            anonymous: lazy
+    # Le provider créé plus haut ajouté au firewall
+            provider: in_database
+    # On précise le formulaire utilisé pour le login
+            form_login:
+    # Le chemin de page de connexion (Route)
+                login_path: account_login
+    # Chemin sur lequel vérifier les informations (Route)
+                check_path: account_login
+
+    # Logout
+            logout:
+    # Le chemin du logout (Route)
+                path: account_logout
+    # La redirection
+                target: account_login
+
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # Il faut donc délocker le admin/login ET IL FAUT LE FAIRE AVANT DE LOCKER ADMIN
+        - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/profile, roles: ROLE_USER }
+        # Sur toutes les routes /admin on vérifie le role d'admin
+        - { path: ^/admin, roles: ROLE_ADMIN }

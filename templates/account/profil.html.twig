@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Edition de profil {% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Modification du profil</h1>
+
+        {{ form_start(form) }} {# Démarrer le formulaire #}
+        {{ form_widget(form) }} {# Afficher les champs #}
+        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %} {% endblock %}
+
+
+

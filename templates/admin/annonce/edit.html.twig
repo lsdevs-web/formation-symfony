@@ -1,0 +1,144 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %} Édition de l'annonce {{ annonce.id }} {% endblock %}
+
+{% form_theme form _self %}
+
+{% block body %}
+
+    <div class="container">
+
+        {{ form_start(form) }}
+
+        <div class="row">
+            <div class="col">
+                <div class="card bg-light">
+                    <div class="card-header">
+                        <h4 class="card-title">Corriger l'annonce ?</h4>
+                        <div class="card-body">
+                            {{ form_widget(form) }}
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>Enregistrer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card bg-light">
+                    <div class="card-header">
+                        <h4 class="card-title">Les réservations</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Voyageur</th>
+                                <th>Date de réservation</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for booking in annonce.bookings %}
+                                <tr>
+                                    <td>{{ booking.id }}</td>
+                                    <td>{{ booking.booker.fullName }}</td>
+                                    <td>{{ booking.createAt|date('d/m/Y H:i') }}</td>
+                                    <td>
+                                        <a href="" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card bg-light">
+                    <div class="card-header">
+                        <h4 class="card-title">Les commentaires</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Voyageurs</th>
+                                <th>Note</th>
+                                <th>Commentaire</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for comment in annonce.comments %}
+                                <tr>
+                                    <td>{{ comment.id }}</td>
+                                    <td>{{ comment.author.fullName }}</td>
+                                    <td>{{ comment.rating }}</td>
+                                    <td>{{ comment.content }}</td>
+                                    <td>
+                                        <a href="" class="btn btn-primary"><i class="fa fa-pencil"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {{ form_end(form) }}
+
+    </div>
+
+{% endblock %}
+
+{% block _annonce_images_widget %}
+    {# Ne représente que le champ _annonce_images_widget #}
+    {{ form_widget(form) }}
+{% endblock %}
+
+{% block _annonce_images_entry_row %}
+    <div id="block_{{ id }}">
+        {{ form_widget(form) }}
+    </div>
+{% endblock %}
+
+{% block _annonce_images_entry_widget %}
+    <div class="row align-items-center mb-3">
+        <div class="col-5">
+            {% if value %}
+                <img src="{{ value.url }}" alt="" class="img-fluid">
+            {% endif %}
+            {{ form_widget(form.url,  {'attr': {'style': "display: none;"}} )}}
+            {{ form_widget(form.annonce,  {'attr': {'style': "display: none;"}} )}}
+
+        </div>
+        <div class="col-5">
+            {{ form_row(form.caption) }}
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-danger" data-action="delete" data-target="#block_{{ id }}">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script>
+        $(document).ready(function () {
+            $('[data-action="delete"]').on('click', function () {
+                const target = this.dataset.target;
+                console.log(target);
+                $(target).remove();
+            });
+        });
+    </script>
+
+{% endblock %}
+
+
+

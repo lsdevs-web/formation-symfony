@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Inscription {% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Inscrivez-vous !</h1>
+
+        {{ form_start(form) }} {# On démarre le formulaire #}
+        {{ form_widget(form) }} {# Affiche le formulaire #}
+        <button type="submit" class="btn btn-success">Confirmez l'inscription
+        </button> {# Button de type submit pour que Symfony gère #}
+        {{ form_end(form) }} {# On ferme le formulaire #}
+    </div>
+
+{% endblock %}
+
+{% block javascripts %} {% endblock %}
+
+
+

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Edition d'une annonce {% endblock %}
+
+{% form_theme form 'partials/_collection.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Edition de l'annonce : <br> <span style="color: #0f7864">{{ annonce.title }}</span></h1>
+
+        {# {{ form(form) }} #}
+
+        {{ form_start(form) }}
+
+        {{ form_widget(form) }}
+
+        <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
+
+
+
+{% block javascripts %}
+    <script src="{{ asset('js/annonce.js') }}"></script>
+{% endblock %}
+
+
+
+

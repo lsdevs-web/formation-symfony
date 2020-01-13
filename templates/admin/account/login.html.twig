@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {{ encore_entry_link_tags('css/global') }}
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <title>Connexion administrateur</title>
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="row justify-content-center" style="margin-top: 150px;">
+
+        <div class="col-md-4">
+
+            <div class="card bg-light">
+                <div class="card-header">
+                    <h4 class="card-title"><i class="fa fa-lock"></i> Connexion à l'administration</h4>
+                </div>
+                <div class="card-body">
+                    {% if hasError %}
+                        <div class="alert alert-warning">
+                            <p>Les informations que vous avez rentrées ne sont pas bonnes</p>
+                        </div>
+                    {% endif %}
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="_username">Email</label>
+                            <input type="text" class="form-control" placeholder="Adresse email" name="_username"
+                                   value="{{ username }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="_password">Mot de passe</label>
+                            <input type="password" class="form-control" placeholder="Votre mot de passe"
+                                   name="_password">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-lock-o">Connexion</i></button>
+                            <a href="{{ path('home') }}" class="btn btn-link"> <i class="fa fa-arrow-circle-left"></i>
+                                Retour au
+                                site </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

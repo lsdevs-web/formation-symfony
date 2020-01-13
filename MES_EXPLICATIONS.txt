@@ -1,0 +1,220 @@
+CONVENTION :
+
+    CamelCase :
+     - MonController
+     - MonEntity
+
+
+REQUIRE :
+    composer:
+
+    - cocur/slugify
+    - fzaninotto/faker --dev
+    - orm-fixtures --dev
+    - encore
+    // A LA FIN
+    - symfony/apache-pack
+
+    npm i --save-dev sass-loader node-sass postcss-loader autoprefixer expose-loader
+
+    npm uninstall --save-dev sass-loader
+    npm install --save-dev sass-loader@7.1.0
+
+
+       webpack.config.js :
+
+             .addEntry('js/global', './assets/js/global.js',)
+             .addEntry('js/ad', './assets/js/ad.js')
+             .addStyleEntry('css/global', './assets/css/global.scss')
+
+            .enableSassLoader()
+            .enablePostCssLoader()
+
+
+       jQuery :
+
+                .addLoader({
+                    test: require.resolve('jquery'),
+                    loader: 'expose-loader?jQuery!expose-loader?$'
+                })
+
+
+
+       postcss.config.js :
+
+
+            module.exports = {
+              plugins: {
+                'autoprefixer': {},
+              }
+            };
+
+
+
+DEPLOIEMENT PRODUCTION :
+
+Créer un repo git
+    Attention au .gitignore :
+
+            .idea/
+            .vs/
+            .env
+
+    git push
+
+Sur ssh :
+
+    git clone
+
+    .env mode prod
+
+    composer install / update
+
+    Faire les manips pour la BDD
+
+
+
+
+
+
+Les CONTROLLERS :
+
+    Pour créer un Controller il faut utiliser php /bin/console make:controller
+
+    Un Controller à besoin d'une fonction public qui accepte :
+     - Soit un "new Response"
+     - Soit un render()  => $this->render('ma.template.twig', ['mavariable' => $variable])
+
+Les ENTITY :
+
+    (La connexion a la BDD se fait dans le .env
+     Il faut d'abord créer la base de donnée avec : php /bin/console doctrine:database:create)
+
+    Pour créer une Entity il faut utiliser php /bin/console make:entity
+    Les Entity sont les classes PHP qui reflaites nos tables de la base de données.
+
+    Elles respectent la convention maVariable
+
+    Le CLI nous demande ce que contiendra nos tables, leurs types, s'ils peuvent être nuls ou non)
+
+    Il faut ensuite créer une Migration =>
+
+Les MIGRATIONS :
+
+    (Doctrine regarde nos Entity, se connecte à la BDD, regarde les différences pour créer des Migrations qui reflètent le mieux possible nos Entity)
+
+    Pour créer une Migration on utilise la commande php /bin/console make:migration
+
+    Symfony créé alors les fichiers de Migrations
+
+
+Envoyer les données sur la BDD :
+
+    Une fois les Entitys et les Migrations créées, il faut dire à Doctrine qu'on veut appliquer ces Migrations
+
+    On utilise la commande php/bin/console doctrine:migrations:migrate
+
+Les FIXTURES :
+
+    Il faut ajouter le package orm-fixtures au projet (--dev)
+
+    Une fois le package ajouter on crée une Fixture avec make:fixtures
+
+    On utilise la fonction load()
+    Dans la nouvelle Fixtures on crée un objet du type souhaité (article) et on y ajoute ce que l'on veut
+                                                                          ->setTitle("Montitre")
+    Ne pas oublier $manager->persist($monObjet) pour persister dans le temps
+    Ne pas oublier $manager->flush() à la fin
+
+    Pour charger la/les Fixtures, on utilise la commande : php /bin/console doctrine:fixtures:load
+
+
+
+Les FORM :
+
+    Quand on fait un formulaire en php directement nous même, Symfony attend un name="_username" et un name="_password"
+
+La SECURITE :
+
+    Fichier security.yaml :
+
+    encoders:
+            App\Entity\User:
+                algorithm: auto
+    providers:
+            in_database:
+                entity:
+                    class: App\Entity\User
+                    property: email
+    firewalls:
+            dev:
+                pattern: ^/(_(profiler|wdt)|css|images|js)/
+                security: false
+
+            # On créé un firewall pour les admins, on se place entre le dev et le main pour qu'il soit vu avant le main
+            admin:
+            #Tout ce qui commence par admin fait partie du firewall admin
+                pattern: ^/admin
+            #On peut y accéder de manière anonyme (pour la page de login admin)
+                anonymous: true
+
+            #Si j'ai des connexions qui est le provider ? (L'entité quit peut se connecter)
+                provider: in_database
+
+            #Le form_login est différents ici, on veut qu'il nous redirige sur le form_login de /admin/login
+                form_login:
+                    #Le chemin du formulaire de connexion
+                    login_path: admin_account_login
+                    #La vérification pour voir si les infos sont bonnes
+                    check_path: admin_account_login
+
+            #Le logout est le même que pour tous
+                logout:
+                    path: account_logout
+                    target: home
+
+
+            main:
+                anonymous: lazy
+                provider: in_database
+                form_login:
+                    login_path: account_login
+                    check_path: account_login
+
+
+
+
+    access_control:
+            # Il faut donc délocker le admin/login ET IL FAUT LE FAIRE AVANT DE LOCKER ADMIN
+
+            - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+            # Sur toutes les routes /admin on vérifie le role d'admin
+
+            - { path: ^/admin, roles: ROLE_ADMIN }
+
+
+    @Security()
+    @IsGranted
+    @Assert\Url()
+    @Assert\Integer(min="8", minMessage"Message")
+
+
+
+
+TWIG :
+
+    - app.user
+    - app.flashes
+    - loop.index, loop.index0 (0 = i)
+
+
+    - | raw | striptags | format | number_format
+
+    - form_start
+    - form_widget
+    - form_end
+
+    - form_start
+    - form_row(form.email)
+    - form_end
